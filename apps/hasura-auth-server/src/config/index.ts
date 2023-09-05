@@ -18,16 +18,17 @@ const schema = Joi.object().keys({
 }).options({stripUnknown: true});
 
 const dotenvPath = findConfig(`.env.${process.env.NODE_ENV}`);
-if(!dotenvPath) {
-    console.error(`Could not find env.${process.env.NODE_ENV} file`);
-    process.exit(1);
+if (!dotenvPath) {
+    console.error(`Could not find env.${process.env.NODE_ENV} file, skip`);
+    dotenv.config({});
+} else {
+    dotenv.config({path: dotenvPath});
 }
-dotenv.config({path: dotenvPath});
 
 const result = schema.validate(process.env);
 
-if(result.error) {
-    for(const err of result.error.details) {
+if (result.error) {
+    for (const err of result.error.details) {
         console.error("Error in env", err.message);
     }
     process.exit(1);

@@ -1,11 +1,9 @@
 import {Request, Response} from "express";
-import {generateJwk} from "../crypto";
 import {celebrate, Joi, Segments} from "celebrate";
-
+import {generateJWT} from "../crypto/jwt";
 
 /**
-* POST /api/v1/user/issue
-*
+ * POST /api/v1/user/issue
  */
 export const issue = [
     celebrate({
@@ -14,11 +12,16 @@ export const issue = [
         }),
     }),
     async (req: Request, res: Response) => {
-        const jwk = await generateJwk();
-        const jwks = {
-            keys: [jwk]
-        };
-        res.status(200).send(jwks);
+        const jwt = await generateJWT(req.body.address);
+        res.status(200).send({token: jwt});
+    }
+];
+
+export const mock_issue = [
+    async (req: Request, res: Response) => {
+        const vitalikETH = "0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B";
+        const jwt = await generateJWT(vitalikETH);
+        res.status(200).send({token: jwt});
     }
 ];
 // /**

@@ -18,8 +18,11 @@ app.use(express.json());
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 app.use(cors());
 
-app.get("/api/v1/device/issue", device.issue);
-app.get("/api/v1/user/issue", user.issue);
+app.post("/api/v1/device/issue", device.issue);
+app.post("/api/v1/device/refresh", device.issue);
+app.post("/api/v1/device/mock_issue", device.mock_issue);
+app.post("/api/v1/user/issue", user.issue);
+app.post("/api/v1/user/mock_issue", user.mock_issue);
 app.get("/powix.jwks", jwks.jwk);
 app.get("/api/v1/config", jwks.config);
 

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/crypto/jwt.ts"],
+  "sourcesContent": ["import * as jose from \"jose\";\nimport {createKeyPair} from \".\";\n\nexport async function generateJWT(id: string, expire = \"24h\", roles: string[] = [\"user\"]): Promise<string> {\n    const {privateKey} = await createKeyPair();\n    const payload = {\n        \"sub\": id,\n        \"user\": {\n            roles,\n        }\n    };\n    const jwt = await new jose.SignJWT(payload)\n        .setProtectedHeader({alg: \"EdDSA\"})\n        .setIssuedAt()\n        .setIssuer(\"urn:powix:auth\")\n        .setExpirationTime(expire)\n        .sign(privateKey);\n    return jwt;\n}\n"],
+  "mappings": "0jBAAA,IAAAA,EAAA,GAAAC,EAAAD,EAAA,iBAAAE,IAAA,eAAAC,EAAAH,GAAA,IAAAI,EAAsB,mBACtBC,EAA4B,aAE5B,eAAsBH,EAAYI,EAAYC,EAAS,MAAOC,EAAkB,CAAC,MAAM,EAAoB,CACvG,KAAM,CAAC,WAAAC,CAAU,EAAI,QAAM,iBAAc,EACnCC,EAAU,CACZ,IAAOJ,EACP,KAAQ,CACJ,MAAAE,CACJ,CACJ,EAOA,OANY,MAAM,IAAIJ,EAAK,QAAQM,CAAO,EACrC,mBAAmB,CAAC,IAAK,OAAO,CAAC,EACjC,YAAY,EACZ,UAAU,gBAAgB,EAC1B,kBAAkBH,CAAM,EACxB,KAAKE,CAAU,CAExB",
+  "names": ["jwt_exports", "__export", "generateJWT", "__toCommonJS", "jose", "import__", "id", "expire", "roles", "privateKey", "payload"]
+}

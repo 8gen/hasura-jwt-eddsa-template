@@ -1,31 +1,47 @@
 version: '3.6'
 services:
+  nginx:
+    image: ghcr.io/8gen/powix-nginx:$MODE
+    build:
+      context: ./
+      dockerfile: ./apps/nginx/Dockerfile
+    environment:
+      HOST: ${DOMAIN}
+    ports:
+      - '127.0.0.1:10002:80'
+    depends_on:
+      - auth
+      - graphql-engine
+
   postgres:
     image: postgres:12
     restart: always
     env_file:
       - .env
+    ports:
+      - '15432:5432'
     environment:
       POSTGRES_DB: hasura
     volumes:
     - /opt/powix/db/:/var/lib/postgresql/data
-  auth-server:
+
+  auth:
+    image: ghcr.io/8gen/powix-auth:$MODE
     build:
-      context: ../
-      dockerfile: ./packages/hasura-auth-server/Dockerfile
+      context: ./
+      dockerfile: ./apps/hasura-auth-server/Dockerfile
     environment:
       NODE_ENV: production
-      PRIVATE_KEY: ${SIGNER_PRIVATE_KEY}
+      PRIVATE_KEY: ${PRIVATE_KEY}
       HOST: 0.0.0.0
       PORT: 3000
-    ports:
-    - '3000'
-    
+
   graphql-engine:
     image: hasura/graphql-engine:v2.22.1
     ports:
-    - "8080:8080"
+    - 8080
     depends_on:
+    - "auth"
     - "postgres"
     restart: always
     environment:
@@ -37,4 +53,4 @@ services:
       HASURA_GRAPHQL_JWT_SECRET: ${HASURA_JWT_SECRET}
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_ADMIN_SECRET}
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: public
-    command: /bin/sh -c 'if [ "$DEVELOPMENT_MODE" = "dev" ]; then export HASURA_GRAPHQL_DEV_MODE=true; fi && graphql-engine serve'
+    command: /bin/sh -c 'if [ "$MODE" = "dev" ]; then export HASURA_GRAPHQL_DEV_MODE=true; fi && graphql-engine serve'

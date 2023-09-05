@@ -3,17 +3,17 @@ module.exports = {
     esbuild: {
         minify: process.env.NODE_ENV != "production",
         bundle: process.env.NODE_ENV === "production",
-        target: "es2015",
+        target: "esnext",
         outdir: "build",
     },
     // Prebuild hook
-    prebuild: async() => {
+    prebuild: async () => {
         console.log("prebuild");
         const rimraf = (await import("rimraf")).default;
         rimraf.sync("./build"); // clean up dist folder
     },
     // Postbuild hook
-    postbuild: async() => {
+    postbuild: async () => {
         console.log("postbuild");
         const cpy = (await import("cpy")).default;
         await cpy(
