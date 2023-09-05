@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../src/controllers/jwks.ts"],
-  "sourcesContent": ["import {Request, Response} from \"express\";\nimport {asJWK} from \"../crypto\";\nimport packageJson from \"../../package.json\";\n\n\n/**\n * Generates a JWK and returns it as a JSON object\n */\nexport const jwk = async (req: Request, res: Response) => {\n    const jwk = await asJWK();\n    const jwks = {\n        keys: [jwk]\n    };\n    res.status(200).send(jwks);\n};\n\n/*\n * Generates config with public key and version number\n *  and returns it as a JSON object\n */\n\nexport const config = async (req: Request, res: Response) => {\n    const jwk = await asJWK();\n    const config = {\n        \"publicKey\": Buffer.from(jwk.x, \"base64\").toString(\"hex\"),\n        \"version\": packageJson.version\n    };\n    res.status(200).send(config);\n};\n"],
-  "mappings": "0jBAAA,IAAAA,EAAA,GAAAC,EAAAD,EAAA,YAAAE,EAAA,QAAAC,IAAA,eAAAC,EAAAJ,GACA,IAAAK,EAAoB,qBACpBC,EAAwB,iCAMjB,MAAMH,EAAM,MAAOI,EAAcC,IAAkB,CAEtD,MAAMC,EAAO,CACT,KAAM,CAFE,QAAM,SAAM,CAEV,CACd,EACAD,EAAI,OAAO,GAAG,EAAE,KAAKC,CAAI,CAC7B,EAOaP,EAAS,MAAOK,EAAcC,IAAkB,CACzD,MAAML,EAAM,QAAM,SAAM,EAClBD,EAAS,CACX,UAAa,OAAO,KAAKC,EAAI,EAAG,QAAQ,EAAE,SAAS,KAAK,EACxD,QAAW,EAAAO,QAAY,OAC3B,EACAF,EAAI,OAAO,GAAG,EAAE,KAAKN,CAAM,CAC/B",
-  "names": ["jwks_exports", "__export", "config", "jwk", "__toCommonJS", "import_crypto", "import_package", "req", "res", "jwks", "packageJson"]
-}
